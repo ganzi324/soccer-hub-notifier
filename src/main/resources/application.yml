@@ -1,2 +1,8 @@
 spring:
-  application.name: soccer-hub-notifier
+  application:
+    name: soccer-hub-notifier
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: qwer1234
