@@ -1,6 +1,17 @@
 spring:
   application:
     name: soccer-hub-notifier
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ganzi324@gmail.com
+    password: Rkswlsksek7!
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   rabbitmq:
     host: localhost
     port: 5672
