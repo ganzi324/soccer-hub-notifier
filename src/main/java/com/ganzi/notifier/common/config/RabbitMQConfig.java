@@ -21,44 +21,78 @@ public class RabbitMQConfig {
 
     private final RabbitMQProperties properties;
 
-    private static final String NOTIFICATION_EXCHANGE = "notification-exchange";
-    public static final String NOTIFICATION_QUEUE = "notification-queue";
-    private static final String ROUTING_KEY_SEND = "notification.send";
-    private static final String NOTIFICATION_DLX = "notification-dlx";
-    private static final String NOTIFICATION_DLQ = "notification-dlq";
-    private static final String ROUTING_KEY_DLQ = "notification.dlq";
+    public static final String MAIN_EXCHANGE = "notification.exchange";
+    public static final String DLX_EXCHANGE = "notification.dlx";
+
+    public static final String MAIN_QUEUE = "notification.queue";
+    public static final String RETRY_QUEUE_1 = "notification.retry.queue.1";
+    public static final String RETRY_QUEUE_2 = "notification.retry.queue.2";
+    public static final String DLQ = "notification.dlq";
+
+    public static final String ROUTING_KEY_MAIN = "notification.main";
+    public static final String ROUTING_KEY_RETRY_1 = "notification.retry.1";
+    public static final String ROUTING_KEY_RETRY_2 = "notification.retry.2";
+    public static final String ROUTING_KEY_DLQ = "notification.dlq";
 
     @Bean
-    public DirectExchange exchange() {
-        return new DirectExchange(NOTIFICATION_EXCHANGE);
+    public DirectExchange mainExchange() {
+        return new DirectExchange(MAIN_EXCHANGE);
     }
 
     @Bean
-    public DirectExchange deadLetterExchange() {
-        return new DirectExchange(NOTIFICATION_DLX);
+    public DirectExchange dlxExchange() {
+        return new DirectExchange(DLX_EXCHANGE);
     }
 
     @Bean
-    public Queue notificationQueue() {
-        return QueueBuilder.durable(NOTIFICATION_QUEUE)
-                .withArgument("x-dead-letter-exchange", NOTIFICATION_DLX)
-                .withArgument("x-dead-letter-routing-key", ROUTING_KEY_DLQ)
+    public Queue mainQueue() {
+        return QueueBuilder.durable(MAIN_QUEUE)
+                .withArgument("x-dead-letter-exchange", MAIN_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", ROUTING_KEY_RETRY_1)
                 .build();
     }
 
     @Bean
-    public Queue notificationDLQ() {
-        return QueueBuilder.durable(NOTIFICATION_DLQ).build();
+    public Queue retryQueue1() {
+        return QueueBuilder.durable(RETRY_QUEUE_1)
+                .withArgument("x-message-ttl", 5_000)
+                .withArgument("x-dead-letter-exchange", MAIN_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", ROUTING_KEY_MAIN)
+                .build();
     }
 
     @Bean
-    public Binding notificationQueueBinding(DirectExchange exchange, Queue notificationQueue) {
-        return BindingBuilder.bind(notificationQueue).to(exchange).with(ROUTING_KEY_SEND);
+    public Queue retryQueue2() {
+        return QueueBuilder.durable(RETRY_QUEUE_2)
+                .withArgument("x-message-ttl", 10_000)
+                .withArgument("x-dead-letter-exchange", MAIN_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", ROUTING_KEY_MAIN)
+                .build();
     }
 
     @Bean
-    public Binding notificationDLQBinding(DirectExchange deadLetterExchange, Queue notificationDLQ) {
-        return BindingBuilder.bind(notificationDLQ).to(deadLetterExchange).with(ROUTING_KEY_DLQ);
+    public Queue dlqQueue() {
+        return QueueBuilder.durable(DLQ).build();
+    }
+
+    @Bean
+    public Binding bindMainQueue() {
+        return BindingBuilder.bind(mainQueue()).to(mainExchange()).with(ROUTING_KEY_MAIN);
+    }
+
+    @Bean
+    public Binding bindRetry1() {
+        return BindingBuilder.bind(retryQueue1()).to(mainExchange()).with(ROUTING_KEY_RETRY_1);
+    }
+
+    @Bean
+    public Binding bindRetry2() {
+        return BindingBuilder.bind(retryQueue2()).to(mainExchange()).with(ROUTING_KEY_RETRY_2);
+    }
+
+    @Bean
+    public Binding bindDLQ() {
+        return BindingBuilder.bind(dlqQueue()).to(dlxExchange()).with(ROUTING_KEY_DLQ);
     }
 
     @Bean
@@ -67,16 +101,6 @@ public class RabbitMQConfig {
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
         rabbitTemplate.setMandatory(true);
         return rabbitTemplate;
-    }
-
-    @Bean
-    public DefaultClassMapper classMapper() {
-        Map<String, Class<?>> idClassMapping = new HashMap<>();
-        idClassMapping.put("emailNotification", EmailNotification.class);
-
-        DefaultClassMapper classMapper = new DefaultClassMapper();
-        classMapper.setIdClassMapping(idClassMapping);
-        return classMapper;
     }
 
     @Bean
@@ -110,6 +134,7 @@ public class RabbitMQConfig {
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
+        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         factory.setMessageConverter(jsonMessageConverter());
         return factory;
     }

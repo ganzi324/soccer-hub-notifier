@@ -17,3 +17,7 @@ spring:
     port: 5672
     username: guest
     password: qwer1234
+    listener:
+      simple:
+        acknowledge-mode: MANUAL
+        default-requeue-rejected: false
