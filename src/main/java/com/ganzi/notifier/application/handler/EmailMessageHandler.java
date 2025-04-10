@@ -1,6 +1,7 @@
 package com.ganzi.notifier.application.handler;
 
 import com.ganzi.notifier.application.service.EmailService;
+import com.ganzi.notifier.notification.application.exception.NotificationSendFailException;
 import com.ganzi.notifier.notification.domain.EmailNotification;
 import com.ganzi.notifier.notification.domain.Notification;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class EmailMessageHandler implements NotificationMessageHandler<EmailNoti
     }
 
     @Override
-    public void handle(EmailNotification notification) {
+    public void handle(EmailNotification notification) throws NotificationSendFailException {
         emailService.send(notification.getTarget().to().getFirst(), notification.getContent().subject(), notification.getContent().body());
     }
 }

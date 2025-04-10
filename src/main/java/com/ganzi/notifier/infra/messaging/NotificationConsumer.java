@@ -3,6 +3,7 @@ package com.ganzi.notifier.infra.messaging;
 import com.ganzi.notifier.application.handler.NotificationHandlerMapper;
 import com.ganzi.notifier.application.handler.NotificationMessageHandler;
 import com.ganzi.notifier.common.config.RabbitMQConfig;
+import com.ganzi.notifier.notification.application.exception.NotificationSendFailException;
 import com.ganzi.notifier.notification.domain.Notification;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ public class NotificationConsumer {
 
             handleNotification(handler, notification);
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-        } catch (Exception exception) {
+        } catch (NotificationSendFailException exception) {
             log.error("Failed to handle notification", exception);
             long retryCount = getRetryCount(message);
 
@@ -57,7 +58,14 @@ public class NotificationConsumer {
 
     @SuppressWarnings("unchecked")
     private <T extends Notification> void handleNotification(NotificationMessageHandler<T> handler, Notification notification) {
-        handler.handle((T) notification);
+        try {
+            handler.handle((T) notification);
+        } catch (NotificationSendFailException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("🔁 An exception occurred while processing the notice", e);
+            throw new NotificationSendFailException("Notification processing failed", e);
+        }
     }
 
     private long getRetryCount(Message message) {
