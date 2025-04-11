@@ -1,6 +1,6 @@
 package com.ganzi.notifier.application.handler;
 
-import com.ganzi.notifier.notification.domain.Notification;
+import com.ganzi.notifier.domain.Notification;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 

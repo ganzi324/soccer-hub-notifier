@@ -1,4 +1,6 @@
-package com.ganzi.notifier.notification.domain;
+package com.ganzi.notifier.domain.email;
+
+import com.ganzi.notifier.domain.Target;
 
 import java.util.List;
 

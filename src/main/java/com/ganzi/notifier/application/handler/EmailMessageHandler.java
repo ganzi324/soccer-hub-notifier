@@ -1,9 +1,9 @@
 package com.ganzi.notifier.application.handler;
 
 import com.ganzi.notifier.application.service.EmailService;
-import com.ganzi.notifier.notification.application.exception.NotificationSendFailException;
-import com.ganzi.notifier.notification.domain.EmailNotification;
-import com.ganzi.notifier.notification.domain.Notification;
+import com.ganzi.notifier.application.exception.NotificationSendFailException;
+import com.ganzi.notifier.domain.email.EmailNotification;
+import com.ganzi.notifier.domain.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

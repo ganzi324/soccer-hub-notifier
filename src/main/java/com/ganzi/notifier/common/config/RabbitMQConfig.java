@@ -1,7 +1,7 @@
 package com.ganzi.notifier.common.config;
 
 import com.ganzi.notifier.common.property.RabbitMQProperties;
-import com.ganzi.notifier.notification.domain.EmailNotification;
+import com.ganzi.notifier.domain.email.EmailNotification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;

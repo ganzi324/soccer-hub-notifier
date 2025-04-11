@@ -1,4 +1,4 @@
-package com.ganzi.notifier.notification.application.exception;
+package com.ganzi.notifier.application.exception;
 
 public class EmailSendFailException extends NotificationSendFailException {
     public EmailSendFailException(String message)  {

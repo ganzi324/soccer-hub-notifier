@@ -1,4 +1,4 @@
-package com.ganzi.notifier.notification.domain;
+package com.ganzi.notifier.domain;
 
 public enum NotificationType {
     EMAIL, SNS, APP_PUSH

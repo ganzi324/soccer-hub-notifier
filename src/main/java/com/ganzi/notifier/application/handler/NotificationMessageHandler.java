@@ -1,7 +1,7 @@
 package com.ganzi.notifier.application.handler;
 
-import com.ganzi.notifier.notification.application.exception.NotificationSendFailException;
-import com.ganzi.notifier.notification.domain.Notification;
+import com.ganzi.notifier.application.exception.NotificationSendFailException;
+import com.ganzi.notifier.domain.Notification;
 
 public interface NotificationMessageHandler<T extends Notification> {
     Class<? extends Notification> getSupportClass();

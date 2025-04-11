@@ -1,4 +1,4 @@
-package com.ganzi.notifier.notification.application.exception;
+package com.ganzi.notifier.application.exception;
 
 public class NotificationSendFailException extends RuntimeException {
     public NotificationSendFailException(String message) {
