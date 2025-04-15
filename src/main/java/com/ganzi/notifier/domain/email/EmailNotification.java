@@ -1,25 +1,45 @@
 package com.ganzi.notifier.domain.email;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.ganzi.notifier.domain.Notification;
+import com.ganzi.notifier.domain.NotificationStatus;
 import com.ganzi.notifier.domain.NotificationType;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @NoArgsConstructor
-@AllArgsConstructor
-public class EmailNotification implements Notification {
-    private UUID id;
+public class EmailNotification extends Notification {
+
     private EmailReceiver target;
     private EmailContent content;
 
-    @Override
-    public UUID getId() {
-        return id;
+    public EmailNotification(UUID id,
+                             NotificationStatus status,
+                             int retryCount,
+                             EmailReceiver target,
+                             EmailContent content,
+                             Instant createdAt,
+                             Instant updatedAt
+    ) {
+        super(id, status, retryCount, createdAt, updatedAt);
+        this.target = target;
+        this.content = content;
     }
 
-    @Override
+    public EmailNotification(UUID id,
+                             NotificationStatus status,
+                             EmailReceiver target,
+                             EmailContent content,
+                             Instant createdAt,
+                             Instant updatedAt
+    ) {
+        super(id, status, 0, createdAt, updatedAt);
+        this.target = target;
+        this.content = content;
+    }
+
     public NotificationType getType() {
         return NotificationType.EMAIL;
     }
@@ -33,5 +53,4 @@ public class EmailNotification implements Notification {
     public EmailContent getContent() {
         return content;
     }
-
 }
