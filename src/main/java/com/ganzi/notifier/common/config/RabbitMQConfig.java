@@ -1,7 +1,7 @@
 package com.ganzi.notifier.common.config;
 
 import com.ganzi.notifier.common.property.RabbitMQProperties;
-import com.ganzi.notifier.domain.email.EmailNotification;
+import com.ganzi.notifier.infra.messaging.EmailNotificationMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -109,7 +109,7 @@ public class RabbitMQConfig {
 
         DefaultJackson2JavaTypeMapper typeMapper = new DefaultJackson2JavaTypeMapper();
         Map<String, Class<?>> idClassMapping = new HashMap<>();
-        idClassMapping.put("emailNotification", EmailNotification.class);
+        idClassMapping.put("emailNotification", EmailNotificationMessage.class);
 
         typeMapper.setIdClassMapping(idClassMapping);
         typeMapper.setTypePrecedence(Jackson2JavaTypeMapper.TypePrecedence.TYPE_ID);
