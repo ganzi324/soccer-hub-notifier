@@ -1,6 +1,6 @@
 package com.ganzi.notifier.application.handler;
 
-import com.ganzi.notifier.domain.Notification;
+import com.ganzi.notifier.infra.messaging.NotificationMessage;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 public class NotificationHandlerMapper {
 
-    private final Map<Class<? extends Notification>, NotificationMessageHandler<?>> handlerMap;
+    private final Map<Class<? extends NotificationMessage>, NotificationMessageHandler<?>> handlerMap;
 
     public NotificationHandlerMapper(List<NotificationMessageHandler<?>> handlers) {
         this.handlerMap = handlers.stream()
