@@ -8,10 +8,10 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @SpringBootApplication
 @ConfigurationPropertiesScan
 @EnableRabbit
-public class SoccerHubNotifierApplication {
+public class TravelmateNotifierApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SoccerHubNotifierApplication.class, args);
+		SpringApplication.run(TravelmateNotifierApplication.class, args);
 	}
 
 }
